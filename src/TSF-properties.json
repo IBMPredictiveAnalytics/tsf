@@ -1,0 +1,526 @@
+{
+  "summary": {
+    "id": "tsf",
+    "version": "1.0",
+    "json_schema": "http://api.dataplatform.ibm.com/schemas/statistics/procedure-ui/component-properties-v1-schema.json",
+    "label": "Time Series Filters"
+  },
+  "properties": [
+    {
+      "id": "dependent",
+      "type": "string",
+      "role": "field",
+      "required": false,
+      "storage": ["numeric", "date"]
+    },
+    {
+      "id": "factors",
+      "type": "array[string]",
+      "role": "field",
+      "required": false
+    },
+    {
+      "id": "hpfilter",
+      "type": "boolean",
+      "required": false,
+      "default": true
+    },
+    {
+      "id": "trendsinfo_data",
+      "type": "array[integer]",
+      "default": [0]
+    },
+    {
+      "id": "bkfilter",
+      "type": "boolean",
+      "required": false,
+      "default": false
+    },
+    {
+      "id": "cffilter",
+      "type": "boolean",
+      "required": false,
+      "default": false
+    },
+    {
+      "id": "hpvariable",
+      "type": "string",
+      "role": "field",
+      "required": false,
+      "storage": ["numeric", "date"]
+    },
+    {
+      "id": "lamb",
+      "type": "number",
+      "required": false,
+      "default": 1600,
+      "constraints": {
+        "op": "greater_than",
+        "value": 0
+      }
+    },
+    {
+      "id": "bk_cf_variables",
+      "type": "array[string]",
+      "role": "field",
+      "required": false,
+      "storage": ["numeric", "date"]
+    },
+    {
+      "id": "drift",
+      "type": "boolean",
+      "required": false,
+      "default": true
+    },
+    {
+      "id": "low",
+      "type": "number",
+      "required": false,
+      "default": 6,
+      "constraints": {
+        "op": "greater_than",
+        "value": 0
+      }
+    },
+    {
+      "id": "high",
+      "type": "number",
+      "required": false,
+      "default": 32,
+      "constraints": {
+        "op": "greater_than",
+        "value": 0
+      }
+    },
+    {
+      "id": "k",
+      "type": "number",
+      "required": false,
+      "default": 12,
+      "constraints": {
+        "op": "greater_than",
+        "value": 0
+      }
+    },
+    {
+      "id": "partition_training",
+      "type": "double",
+      "default": 70,
+      "constraints": [
+        {
+          "op": "greater_than",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "partition_holdout",
+      "type": "double",
+      "default": 30,
+      "constraints": [
+        {
+          "op": "min",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "partition_variable",
+      "type": "string",
+      "role": "field",
+      "storage": ["numeric", "date"]
+    }
+  ],
+  "complex_types": [],
+  "validations": [
+    {
+      "validation": {
+        "id": "select_one_test",
+        "fail_message": {
+          "focus_parameter_ref": "",
+          "message": {
+            "default": "Must select at least one test filter type",
+            "resource_key": "select_one_filter.desc"
+          },
+          "type": "error"
+        },
+        "evaluate": {
+          "or": [
+            {
+              "condition": {
+                "parameter_ref": "hpfilter",
+                "op": "equals",
+                "value": true
+              }
+            },
+            {
+              "condition": {
+                "parameter_ref": "bkfilter",
+                "op": "equals",
+                "value": true
+              }
+            },
+            {
+              "condition": {
+                "parameter_ref": "cffilter",
+                "op": "equals",
+                "value": true
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "validation": {
+        "id": "select_one_hp_variable",
+        "fail_message": {
+          "focus_parameter_ref": "",
+          "message": {
+            "default": "Must select one HP test filter variable",
+            "resource_key": "select_one_hp_var.desc"
+          },
+          "type": "error"
+        },
+        "evaluate": {
+          "or": [
+            {
+              "condition": {
+                "parameter_ref": "hpfilter",
+                "op": "equals",
+                "value": true
+              }
+            },
+            {
+              "condition": {
+                "parameter_ref": "bkfilter",
+                "op": "equals",
+                "value": true
+              }
+            },
+            {
+              "condition": {
+                "parameter_ref": "cffilter",
+                "op": "equals",
+                "value": true
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "validation": {
+        "id": "one_or_two_variables",
+        "fail_message": {
+          "focus_parameter_ref": "",
+          "message": {
+            "default": "You can only select either one or two variables for the BK and CF tests",
+            "resource_key": "one_or_two_variables.desc"
+          },
+          "type": "error"
+        },
+        "evaluate": {
+          "or": [
+            {
+              "and": [
+                {
+                  "condition": {
+                    "parameter_ref": "bkfilter",
+                    "op": "equals",
+                    "value": false
+                  }
+                },
+                {
+                  "condition": {
+                    "parameter_ref": "cffilter",
+                    "op": "equals",
+                    "value": false
+                  }
+                }
+              ]
+            },
+            {
+              "and": [
+                {
+                  "condition": {
+                    "parameter_ref": "bk_cf_variables",
+                    "op": "isNotEmpty",
+                    "value": true
+                  }
+                },
+                {
+                  "condition": {
+                    "parameter_ref": "bk_cf_variables",
+                    "op": "notGreaterThan",
+                    "value": 2
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "validation": {
+        "id": "low_greater_than_zero",
+        "fail_message": {
+          "focus_parameter_ref": "",
+          "message": {
+            "default": "The low setting must be greater than zero",
+            "resource_key": "low_over_zero.desc"
+          },
+          "type": "error"
+        },
+        "evaluate": {
+          "or": [
+            {
+              "and": [
+                {
+                  "condition": {
+                    "parameter_ref": "bkfilter",
+                    "op": "equals",
+                    "value": false
+                  }
+                },
+                {
+                  "condition": {
+                    "parameter_ref": "cffilter",
+                    "op": "equals",
+                    "value": false
+                  }
+                }
+              ]
+            },
+            {
+              "condition": {
+                "parameter_ref": "low",
+                "op": "isGreaterThan",
+                "value": 0
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "validation": {
+        "id": "high_greater_than_zero",
+        "fail_message": {
+          "focus_parameter_ref": "",
+          "message": {
+            "default": "The high setting must be greater than zero",
+            "resource_key": "high_over_zero.desc"
+          },
+          "type": "error"
+        },
+        "evaluate": {
+          "or": [
+            {
+              "and": [
+                {
+                  "condition": {
+                    "parameter_ref": "bkfilter",
+                    "op": "equals",
+                    "value": false
+                  }
+                },
+                {
+                  "condition": {
+                    "parameter_ref": "cffilter",
+                    "op": "equals",
+                    "value": false
+                  }
+                }
+              ]
+            },
+            {
+              "condition": {
+                "parameter_ref": "high",
+                "op": "isGreaterThan",
+                "value": 0
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "validation": {
+        "id": "k_greater_than_zero",
+        "fail_message": {
+          "focus_parameter_ref": "",
+          "message": {
+            "default": "The K setting must be greater than zero",
+            "resource_key": "k_over_zero.desc"
+          },
+          "type": "error"
+        },
+        "evaluate": {
+          "or": [
+            {
+              "and": [
+                {
+                  "condition": {
+                    "parameter_ref": "bkfilter",
+                    "op": "equals",
+                    "value": false
+                  }
+                },
+                {
+                  "condition": {
+                    "parameter_ref": "cffilter",
+                    "op": "equals",
+                    "value": false
+                  }
+                }
+              ]
+            },
+            {
+              "condition": {
+                "parameter_ref": "low",
+                "op": "isGreaterThan",
+                "value": 0
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "backend_processing": {
+    "delete_missing": "listwise",
+    "handle_missing": "exclude",
+    "rounding_weight": "unrounded",
+    "frequency_weight": true,
+    "partition_variable": false,
+    "add_cps_table": false,
+    "records_per_chunk": -1,
+    "syntax_parsing": "embedded",
+    "include_original_factors": true,
+    "include_trends_info": true
+  },
+  "syntax": {
+    "name": "TIME_SERIES_FILTERS",
+    "subcommands": [
+      {
+        "subcommand": "",
+        "required": false,
+        "parameters": [
+          {
+            "parameter": "",
+            "required": false,
+            "property": "dependent"
+          },
+          {
+            "parameter": "BY",
+            "is_list": true,
+            "property": "factors"
+          }
+        ]
+      },
+      {
+        "subcommand": "FILTERS",
+        "required": true,
+        "parameters": [
+          {
+            "parameter": "HP",
+            "required": false,
+            "property": "hpfilter"
+          },
+          {
+            "parameter": "BK",
+            "required": false,
+            "property": "bkfilter"
+          },
+          {
+            "parameter": "CF",
+            "required": false,
+            "property": "cffilter"
+          }
+        ]
+      },
+      {
+        "subcommand": "TRENDSINFO",
+        "required": false,
+        "parameters": [
+          {
+            "parameter": "GETDATA",
+            "required": false,
+            "property": "trendsinfo_data"
+          }
+        ]
+      },
+      {
+        "subcommand": "HP",
+        "assignment_type": "assignment",
+        "required": false,
+        "parameters": [
+          {
+            "parameter": "VAR",
+            "required": true,
+            "property": "hpvariable"
+          },
+          {
+            "parameter": "LAMBDA",
+            "required": true,
+            "property": "lamb"
+          }
+        ]
+      },
+      {
+        "subcommand": "BK_CF",
+        "assignment_type": "assignment",
+        "required": false,
+        "parameters": [
+          {
+            "parameter": "VARS",
+            "required": true,
+            "is_list": true,
+            "property": "bk_cf_variables"
+          },
+          {
+            "parameter": "DRIFT",
+            "required": false,
+            "property": "drift"
+          },
+          {
+            "parameter": "LOW",
+            "required": false,
+            "property": "low"
+          },
+          {
+            "parameter": "HIGH",
+            "required": false,
+            "property": "high"
+          },
+          {
+            "parameter": "K",
+            "required": false,
+            "property": "k"
+          }
+        ]
+      },
+      {
+        "subcommand": "PARTITION",
+        "assignment_type": "assignment",
+        "required": false,
+        "parameters": [
+          {
+            "parameter": "TRAINING",
+            "property": "partition_training"
+          },
+          {
+            "parameter": "HOLDOUT",
+            "property": "partition_holdout"
+          },
+          {
+            "parameter": "VARIABLE",
+            "property": "partition_variable"
+          }
+        ]
+      }
+    ]
+  }
+}

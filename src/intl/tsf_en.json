@@ -1,0 +1,28 @@
+{
+    "procedure.title": "Time Series Filter",
+    "procedure.description": "",
+    "select_one_filter.desc": "Must select at least one test filter",
+    "one_or_two_variables.desc": "You can only select either one or two variables for the BK and CF tests",
+    "select_one_hp_var.desc": "Must select one HP test filter variable",
+    "low_over_zero.desc": "The low setting must be greater than zero",
+    "high_over_zero.desc": "The high setting must be greater than zero",
+    "k_over_zero.desc": "The K setting must be greater than zero",
+    "no_time_var_error": "User must create a date variable in the Data -> Define date and time UI before running this extension.",
+    "python_returned_msg": "Python returned the following message:",
+    "python_output": "Python Output",
+    "no_date_factor": "No date factor variable found in the data set. Please create a date factor variable in the Data -> Define date and time UI before running this extension.",
+    "date_label": "Time",
+    "combined_y_data_label": "Value",
+    "cycle_label": "Cycle",
+    "trend_label": "Trend",
+    "hp_variable_chart_title": "Time Series Plot for",
+    "hp_filter_trend_title": "HP Filter Trends Plot",
+    "hp_filter_cycle_title": "HP Filter Cycle Plot",
+    "hp_filter_trend_and_variable_plot": "HP Filter Combined Plot for Trend and",
+    "bk_filter_plot_title": "BK Filter Plot for",
+    "bk_filter_plot_combined_title": "BK Filter Combined Plot for",
+    "cf_filter_plot_title": "CF Filter Plot for",
+    "cf_filter_comparison_plot_title": "CF Filter Comparison Plot for"
+
+        
+}

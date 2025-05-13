@@ -1,0 +1,20 @@
+Name: tsf
+Display-Name: Time Series Filters
+Dialog-Specs: TSF_DLG.cfe
+Code-Files: tsf_wrapper.py
+Misc-Files: TSF-properties.json
+Summary: Fits time series filter using Python stats model packages.
+Description: Time series filters are widely applied in economics to es
+ timate the underlying trend of macroeconomic variables like GDP, unem
+ ployment, or inflation, where it's useful for distinguishing long-ter
+ m trends from short-term fluctuations.
+Author: Statistics, IBM SPSS
+Version: 1.0.0
+Product-Version: 31.0.0.0
+Date: 05/02/2025
+Platforms: Windows, MacOS
+Plugins: Python
+Python-Version: 3
+Python-Modules: statsmodels
+Python-Module-Versions: statsmodels
+Translation-Catalogues: intl
